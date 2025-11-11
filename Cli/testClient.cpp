@@ -13,7 +13,13 @@ Client::Client()
 
 Client::~Client()
 {
-  delete this->p_fd;
+  close(this->socClient_fd);
+}
+
+void Client::set_life(bool in_life)
+{
+  this->life = in_life;
+  return;
 }
 
 void Client::setSoc()
@@ -40,7 +46,7 @@ void Client::setSoc()
   this->createTh_recv();
   // recv용 쓰레드 생성
 
-  while (1)
+  while (this->life)
   {
     this->main_loop();
   }
@@ -50,6 +56,15 @@ void Client::main_loop()
 {
   string tmp_s;
   getline(cin, tmp_s);
+
+  if (tmp_s == "end")
+  {
+    shutdown(this->socClient_fd, SHUT_RDWR);
+    this->set_life(false);
+    cout << "Exit Client" << "\n";
+    return;
+  }
+
   string bufGet("C ");
   bufGet += tmp_s;
 
@@ -114,7 +129,7 @@ void *Client::entryPoint(void *vp)
 
 void Client::entryPoint_loop()
 {
-  while (1)
+  while (this->life)
   {
     this->recvAll();
   }
@@ -130,6 +145,12 @@ void Client::recvAll()
   while (bufSize > tmp_bufSize)
   {
     int ret_recvSize = recv(this->socClient_fd, (void *)((char *)&bufRecvSize + tmp_bufSize), bufSize - tmp_bufSize, 0);
+
+    if (ret_recvSize == 0)
+    {
+      return;
+    }
+
     tmp_bufSize += ret_recvSize;
   }
 

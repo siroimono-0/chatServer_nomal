@@ -24,7 +24,6 @@ public:
   ~Client();
 
   void setSoc();
-  int socClient_fd;
   //======================================
   static void *entryPoint(void *vp);
   void createTh_recv();
@@ -34,8 +33,10 @@ public:
 
   void recvAll();
 
+  void set_life(bool in_life);
+
 private:
-  RAII_fd *p_fd;
   bool life = true;
   struct sockaddr_in st_socClient = {};
+  int socClient_fd;
 };
