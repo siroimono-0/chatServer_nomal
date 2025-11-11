@@ -54,7 +54,7 @@ void Sv::setServer()
   this->st_soc.sin_port = htons(7777);
   // 포트 설정
 
-  int ret_inet_pton = inet_pton(AF_INET, "0.0.0.0", &this->st_soc.sin_addr);
+  int ret_inet_pton = inet_pton(AF_INET, "127.0.0.1", &this->st_soc.sin_addr);
   if (ret_inet_pton != 1)
   {
     check_err::check(string(__func__) + " ret_inet_pton", ret_inet_pton, ret_inet_pton);
@@ -214,5 +214,18 @@ void Sv::recv_send_All()
 
   cout << __func__ << endl;
   delete[] bufRecv;
+  return;
+}
+
+void Sv::remove_SocClient_fd(int in_fd)
+{
+  auto rm_fd = find_if(this->vec_socClient_fd.begin(), this->vec_socClient_fd.end(), [&](int fd)
+                       {if (fd == in_fd)
+            {
+              return true;
+            }
+            return false; });
+
+  this->vec_socClient_fd.erase(rm_fd);
   return;
 }

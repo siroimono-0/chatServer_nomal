@@ -82,6 +82,7 @@ void Worker::recv_send_All_Client()
     {
       cout << "Disconnected Client" << endl;
       this->set_connectStat(false);
+      this->p_Sv->remove_SocClient_fd(this->socClient_fd);
       return;
     }
   }

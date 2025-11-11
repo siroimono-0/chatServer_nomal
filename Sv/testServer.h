@@ -43,6 +43,8 @@ public:
   static void SIGINThandler(int sig);
   void set_life(bool in_life);
 
+  void remove_SocClient_fd(int in_fd);
+
 private:
   int socSv_fd;
   struct sockaddr_in st_soc = {};
